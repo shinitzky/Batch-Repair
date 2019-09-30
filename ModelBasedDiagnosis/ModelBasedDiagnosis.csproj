@@ -42,11 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BNParser.cs" />
     <Compile Include="Tools\DiagnosesCroper.cs" />
     <Compile Include="Entities\Comp.cs" />
     <Compile Include="ExperimentsRunner.cs" />
-    <Compile Include="MDPPlannerTester.cs" />
     <Compile Include="Tools\PhysiotherapyCaseParser.cs" />
     <Compile Include="Entities\PhysioCaseInstance.cs" />
     <Compile Include="PhysiotherapySimulator.cs" />
@@ -91,7 +89,6 @@
     <Compile Include="Diagnoser\DiagnosesSearcher.cs" />
     <Compile Include="Entities\RepairActionsHashSet.cs" />
     <Compile Include="Entities\RepairActionsTrie.cs" />
-    <Compile Include="Tools\OLDResultsProcessor.cs" />
     <Compile Include="Simulator.cs" />
     <Compile Include="Planner\BatchCostEstimator.cs" />
     <Compile Include="Entities\SystemModel.cs" />
