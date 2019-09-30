@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A7959C7E-188F-4DA1-9A52-6BEF79F7B902}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ModelBasedDiagnosis</RootNamespace>
+    <AssemblyName>ModelBasedDiagnosis</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BNParser.cs" />
+    <Compile Include="Tools\DiagnosesCroper.cs" />
+    <Compile Include="Entities\Comp.cs" />
+    <Compile Include="ExperimentsRunner.cs" />
+    <Compile Include="MDPPlannerTester.cs" />
+    <Compile Include="Tools\PhysiotherapyCaseParser.cs" />
+    <Compile Include="Entities\PhysioCaseInstance.cs" />
+    <Compile Include="PhysiotherapySimulator.cs" />
+    <Compile Include="Planner\AStarIterationDetails.cs" />
+    <Compile Include="Planner\AStarPlanner.cs" />
+    <Compile Include="Planner\AStarPowerSetPlanner.cs" />
+    <Compile Include="Planner\AStarUnionPlanner.cs" />
+    <Compile Include="Planner\AStarVertex.cs" />
+    <Compile Include="Planner\BatchPlanner.cs" />
+    <Compile Include="Planner\BDBatchPlanner.cs" />
+    <Compile Include="Entities\Cone.cs" />
+    <Compile Include="Diagnoser\ConesAlgorithm.cs" />
+    <Compile Include="Planner\RandomBatchPlanner.cs" />
+    <Compile Include="ResultsProcessor.cs" />
+    <Compile Include="Tools\CSVExport.cs" />
+    <Compile Include="Entities\Diagnosis.cs" />
+    <Compile Include="Entities\DiagnosisSet.cs" />
+    <Compile Include="Planner\BatchPlannerIterationDetails.cs" />
+    <Compile Include="Planner\HeuristicBatchPlanner.cs" />
+    <Compile Include="Entities\Gate.cs" />
+    <Compile Include="Diagnoser\FlipFunction.cs" />
+    <Compile Include="Entities\HealthStateVector.cs" />
+    <Compile Include="Planner\GHSBatchPlanner.cs" />
+    <Compile Include="Diagnoser\IDiagnoser.cs" />
+    <Compile Include="Diagnoser\IFunction.cs" />
+    <Compile Include="Tools\IPrefixMatcher.cs" />
+    <Compile Include="Diagnoser\IterativeDeepening.cs" />
+    <Compile Include="Planner\KHPBatchPlanner.cs" />
+    <Compile Include="Planner\MDPPlanner.cs" />
+    <Compile Include="Planner\MDPState.cs" />
+    <Compile Include="Tools\ISCASParser.cs" />
+    <Compile Include="Entities\MyTrieNode.cs" />
+    <Compile Include="Planner\OptimisticEstimator.cs" />
+    <Compile Include="Planner\PessimisticEstimator.cs" />
+    <Compile Include="Planner\SinglePlanner.cs" />
+    <Compile Include="Planner\PowersetBasedSearcher.cs" />
+    <Compile Include="Tools\PrefixMatcher.cs" />
+    <Compile Include="Tools\PriorityQueue.cs" />
+    <Compile Include="Entities\RepairAction.cs" />
+    <Compile Include="Entities\RepairActionsSet.cs" />
+    <Compile Include="Planner\RepairActionSearcher.cs" />
+    <Compile Include="Diagnoser\DiagnosesSearcher.cs" />
+    <Compile Include="Entities\RepairActionsHashSet.cs" />
+    <Compile Include="Entities\RepairActionsTrie.cs" />
+    <Compile Include="Tools\OLDResultsProcessor.cs" />
+    <Compile Include="Simulator.cs" />
+    <Compile Include="Planner\BatchCostEstimator.cs" />
+    <Compile Include="Entities\SystemModel.cs" />
+    <Compile Include="Entities\MultipleInputGate.cs" />
+    <Compile Include="Entities\Observation.cs" />
+    <Compile Include="Entities\OneInputGate.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Entities\SystemState.cs" />
+    <Compile Include="Tools\Trie.cs" />
+    <Compile Include="Tools\TrieNode.cs" />
+    <Compile Include="Planner\UnionBasedSearcher.cs" />
+    <Compile Include="Entities\Wire.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PhysiotherapyDomain\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
