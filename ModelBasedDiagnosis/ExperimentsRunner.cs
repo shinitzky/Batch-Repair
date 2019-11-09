@@ -7,132 +7,82 @@ using ModelBasedDiagnosis.PhysiotherapyDomain;
 
 namespace ModelBasedDiagnosis
 {
-    public enum RepairAlgorithm { AsP, AsU, MDP, HC, UK, HP, KHP}
+    public enum RepairAlgorithmType { AsP, AsU, MDP, HC, UK, HP, KHP}
 
     class ExperimentsRunner
     {
-        private BatchCostEstimator bce;
-        public BatchCostEstimator Bce
-        {
-            get
-            {
-                return bce;
-            }
-            set
-            {
-                bce = value;
-                overhead = bce.Overhead;
-            }
-        }
-        private double overhead;
-        private string path;
-        private int maxDiag;
-        public ExperimentsRunner(BatchCostEstimator bce)
-        {
-            if (bce == null)
-                Bce = new PessimisticEstimator(overhead, PessimisticEstimator.PessimisticEstimationType.nextState, PessimisticEstimator.FFPType.FFP);
-            else
-                Bce = bce;
-        }
         
-        public ExperimentsRunner() : this(null)
-        {
-           
-        }
+        public ExperimentsRunner() //: this(null)
+        {}
 
-        public void RunAll(bool iscas, string filesPath, List<RepairAlgorithm> algorithms, List<int> bounds, int maxDiag)
+        public void RunIscas(string filesPath, List<RepairAlgorithmType> algorithms, List<int> bounds, BatchCostEstimator bce, int maxDiag, List<string> systems)
         {
-            path = filesPath;
-            this.maxDiag = maxDiag;
-            List<BatchPlanner> planners = createPlanners(algorithms, bounds);
-            foreach(BatchPlanner planner in planners)
-            {
-                if (iscas)
-                {
-                    RunISCASRepairAlgorithm(planner, "74182");
-                    RunISCASRepairAlgorithm(planner, "74283");
-                    RunISCASRepairAlgorithm(planner, "c432");
-                    RunISCASRepairAlgorithm(planner, "c880");
-                }
-                else
-                    RunRepairAlgorithmPhysio(planner);
-
-            }
-        }
-
-        public void RunIscas(string filesPath, List<RepairAlgorithm> algorithms, List<int> bounds, int maxDiag, string system)
-        {
-            path = filesPath;
-            overhead = Bce.Overhead;
-            this.maxDiag = maxDiag;
-            List<BatchPlanner> planners = createPlanners(algorithms, bounds);
+            List<BatchPlanner> planners = createPlanners(algorithms, bounds, bce);
             foreach (BatchPlanner planner in planners)
-                    RunISCASRepairAlgorithm(planner, system);                   
+                foreach(string system in systems)
+                    RunISCASRepairAlgorithm(filesPath, planner, bce.Overhead, maxDiag, system);                   
 
         }
-        public void RunPhysio(string filesPath, List<RepairAlgorithm> algorithms, List<int> bounds, int maxDiag)
+        public void RunPhysio(string filesPath, List<RepairAlgorithmType> algorithms, List<int> bounds, BatchCostEstimator bce, int maxDiag)
         {
-            path = filesPath;
-            overhead = Bce.Overhead;
-            this.maxDiag = maxDiag;
-            List<BatchPlanner> planners = createPlanners(algorithms, bounds);
+            List<BatchPlanner> planners = createPlanners(algorithms, bounds, bce);
             foreach (BatchPlanner planner in planners)
-                    RunRepairAlgorithmPhysio(planner);
+                    RunRepairAlgorithmPhysio(filesPath, planner, bce.Overhead, maxDiag);
 
         }
-        public void RunRepairAlgorithmPhysio(BatchPlanner planner)
+        public void RunRepairAlgorithmPhysio(string filesPath, BatchPlanner planner, double overhead, int maxDiag)
         {
             PhysiotherapySimulator sim = new PhysiotherapySimulator();
-            sim.BatchRepair(path, planner, overhead, maxDiag);
+            sim.BatchRepair(filesPath, planner, overhead, maxDiag);
         }
-        public void RunISCASRepairAlgorithm(BatchPlanner planner, string system)
+        public void RunISCASRepairAlgorithm(string filesPath, BatchPlanner planner, double overhead, int maxDiag, string system)
         {
-            string fileModel = path + "systems/" + system + ".txt";
-            string fileObs = path + "observations/" + system + "_iscas85.obs";
-            string fileReal = path + "real/" + system + "_minCard_Real.txt";
-            string diagPath = path + "groundedDiagnoses/";
+            string fileModel = filesPath + "systems/" + system + ".txt";
+            string fileObs = filesPath + "observations/" + system + "_iscas85.obs";
+            string fileReal = filesPath + "real/" + system + "_minCard_Real.txt";
+            string diagPath = filesPath + "groundedDiagnoses/";
             Simulator sim = new Simulator();
             sim.BatchRepair(diagPath, fileModel, fileObs, fileReal, planner, overhead, true, maxDiag);
         }
-        private List<BatchPlanner> createPlanners(List<RepairAlgorithm> algorithms, List<int> bounds)
+        private List<BatchPlanner> createPlanners(List<RepairAlgorithmType> algorithms, List<int> bounds, BatchCostEstimator bce)
         {
             List<BatchPlanner> planners = new List<BatchPlanner>();
-            foreach(RepairAlgorithm algorithm in algorithms)
+            foreach(RepairAlgorithmType algorithm in algorithms)
             {
                 switch (algorithm)
                 {
-                    case RepairAlgorithm.AsP:
-                        planners.Add(new AStarPowerSetPlanner(Bce));
+                    case RepairAlgorithmType.AsP:
+                        planners.Add(new AStarPowerSetPlanner(bce));
                         break;
-                    case RepairAlgorithm.AsU:
-                        planners.Add(new AStarUnionPlanner(Bce));
+                    case RepairAlgorithmType.AsU:
+                        planners.Add(new AStarUnionPlanner(bce));
                         foreach (int bound in bounds)
-                            planners.Add(new AStarUnionPlanner(Bce, bound));
+                            planners.Add(new AStarUnionPlanner(bce, bound));
                         break;
-                    case RepairAlgorithm.HC:
-                        planners.Add(new GHSBatchPlanner(Bce));
+                    case RepairAlgorithmType.HC:
+                        planners.Add(new GHSBatchPlanner(bce));
                         foreach (int bound in bounds)
-                            planners.Add(new GHSBatchPlanner(Bce, bound));
+                            planners.Add(new GHSBatchPlanner(bce, bound));
                         break;
-                    case RepairAlgorithm.KHP:
+                    case RepairAlgorithmType.KHP:
                         foreach (int bound in bounds) 
-                                planners.Add(new KHPBatchPlanner(bound, Bce));
+                                planners.Add(new KHPBatchPlanner(bound, bce));
                         break;
-                    case RepairAlgorithm.HP:
-                        planners.Add(new KHPBatchPlanner(1, Bce));
+                    case RepairAlgorithmType.HP:
+                        planners.Add(new KHPBatchPlanner(1, bce));
                         break;
-                    case RepairAlgorithm.MDP:
+                    case RepairAlgorithmType.MDP:
                         foreach (int bound in bounds)
                         {
                             RepairActionSearcher ras = new UnionBasedSearcher(bound, false);
-                            planners.Add(new MDPPlanner(ras, Bce, 10000, 5));
+                            planners.Add(new MDPPlanner(ras, bce, 10000, 5));
                         }
                         break;
-                    case RepairAlgorithm.UK:
+                    case RepairAlgorithmType.UK:
                         foreach (int bound in bounds)
                         {
                             RepairActionSearcher ras = new UnionBasedSearcher(bound, false);
-                            planners.Add(new HeuristicBatchPlanner(ras,Bce));
+                            planners.Add(new HeuristicBatchPlanner(ras, bce));
                         }
                         break;
                 }

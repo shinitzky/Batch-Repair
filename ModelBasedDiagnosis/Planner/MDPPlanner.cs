@@ -145,13 +145,16 @@ namespace ModelBasedDiagnosis
             if (systemNotFixed)
             {
                 if (nextStatesDic.ContainsKey(state))
-                    return nextStatesDic[state][action];
+                {
+                    if(nextStatesDic[state].ContainsKey(action))
+                        return nextStatesDic[state][action];
+                }
+                else
+                    nextStatesDic.Add(state, new Dictionary<RepairAction, MDPState>());
 
-                nextStatesDic.Add(state, new Dictionary<RepairAction, MDPState>());
                 SystemState nextSysState = state.State.GetNextState(action);
                 MDPState nextState = new MDPState(nextSysState, state.Level + 1);
                 nextStatesDic[state].Add(action, nextState);
-
                 return nextState;
             }
             else
